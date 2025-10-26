@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kue Ulang Tahun Interaktif 🎂</title>
+
+<style>
+  :root{
+    --bg:#0b0e1a;
+    --dot:#18213a;
+    --pink:#ff71a8;
+    --rose:#ffb3c7;
+    --mint:#b7ffd6;
+    --cream:#fff3e0;
+    --wax:#ffd8d8;
+    --flame:#ffd86b;
+    --flame2:#ff9a3c;
+    --teal:#24e5d0;
+  }
+
+  html,body{height:100%}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 20% 10%,#111a33 0 20%, transparent 21%),
+      radial-gradient(circle at 80% 80%,#111a33 0 20%, transparent 21%),
+      repeating-linear-gradient(45deg,var(--bg) 0 12px,var(--dot) 12px 13px);
+    background-color:var(--bg);
+    color:#e9f1ff;
+    font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+  }
+
+  .card{
+    width:min(720px,95vw);
+    text-align:center;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:24px;
+    padding:24px 20px 28px;
+    box-shadow:0 10px 40px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.05);
+    position:relative;
+    overflow:hidden;
+  }
+
+  h1{margin:6px 0 2px;font-size:clamp(24px,4.5vw,36px);text-shadow:0 3px 0 rgba(0,0,0,.25),0 0 20px rgba(255,113,168,.35);}
+  .subtitle{opacity:.85;font-size:14px;margin-bottom:18px}
+  .wish{font-weight:600;color:var(--mint);text-shadow:0 0 12px rgba(36,229,208,.45);margin-top:10px;margin-bottom:14px;}
+
+  /* ================== Cake ================== */
+  .stage{display:grid;place-items:center;margin:10px 0 6px;position:relative;}
+  .cake{position:relative;width:220px;height:170px;transform:translateZ(0);}
+  .cake .tier{
+    position:absolute;left:50%;transform:translateX(-50%);
+    border-radius:16px 16px 10px 10px/24px 24px 10px 10px;
+    box-shadow:inset 0 2px 0 #fff,0 8px 0 0 rgba(0,0,0,.1);
+  }
+  .tier.t1{width:220px;height:95px;bottom:0;background:linear-gradient(var(--cream),#ffd7b0 60%,#ffc999);}
+  .tier.t2{width:160px;height:70px;bottom:74px;background:linear-gradient(#ffe6ef,#ffd1e3 60%,#ffbfd7);}
+  .frost{
+    position:absolute;left:50%;transform:translateX(-50%);
+    width:230px;height:22px;bottom:86px;
+    background:radial-gradient(circle at 12px 11px,#fff 0 12px,transparent 12.5px) 0 0/46px 22px repeat-x;
+    filter:drop-shadow(0 2px 0 rgba(0,0,0,.1));
+  }
+  .plate{
+    width:260px;height:18px;border-radius:20px;background:linear-gradient(#bcd7ff,#7aa6ff);
+    position:absolute;left:50%;transform:translateX(-50%);bottom:-4px;
+    box-shadow:0 6px 20px rgba(0,0,0,.45);
+  }
+
+  /* Sprinkles */
+  .sprinkle{
+    position:absolute;width:10px;height:4px;border-radius:2px;
+    background:var(--pink);transform:rotate(var(--rot,15deg));
+    box-shadow:0 0 12px rgba(255,113,168,.3);opacity:.9;
+  }
+  .sprinkle.mint{background:var(--mint)}
+  .sprinkle.rose{background:var(--rose)}
+
+  /* Candle */
+  .candle{
+    position:absolute;left:50%;bottom:130px;transform:translateX(-50%);
+    width:38px;height:70px;border-radius:10px;
+    background:linear-gradient(#fff,var(--wax));
+    box-shadow:inset 0 -8px 0 rgba(0,0,0,.05),0 3px 0 rgba(0,0,0,.08);
+  }
+  .candle::before{
+    content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(135deg,rgba(255,113,168,.35) 0 8px,rgba(255,113,168,0) 8px 16px);
+    border-radius:inherit;mix-blend-mode:multiply;
+  }
+  .wick{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:4px;height:14px;background:#222;border-radius:2px;box-shadow:0 -3px 0 #333;}
+  .flame{
+    position:absolute;top:-38px;left:50%;transform:translateX(-50%);
+    width:32px;height:44px;border-radius:50%;
+    background:radial-gradient(ellipse at 50% 60%,#fff8ad 0 25%,var(--flame) 26% 55%,var(--flame2) 56% 100%);
+    box-shadow:0 0 35px 10px rgba(255,204,0,.45);
+    transform-origin:50% 80%;
+    animation:flicker .09s infinite alternate,sway 2.1s ease-in-out infinite;
+  }
+  @keyframes flicker{from{filter:brightness(1)}to{filter:brightness(1.15)}}
+  @keyframes sway{0%,100%{transform:translateX(-50%) rotate(-2deg)}50%{transform:translateX(-50%) rotate(2deg)}}
+  .flame.fade{animation:fade .25s linear forwards;}
+  @keyframes fade{to{transform:translateX(-50%) scale(.2);opacity:.15;filter:blur(2px)}}
+  .hidden{display:none!important}
+
+  /* Visualizer ring */
+  .ring{
+    position:absolute;left:50%;top:calc(50% - 30px);
+    transform:translate(-50%,-50%);width:210px;height:210px;border-radius:50%;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.05);
+    pointer-events:none;
+  }
+  .ring::after{
+    content:"";position:absolute;inset:0;border-radius:50%;
+    outline:3px dashed rgba(36,229,208,.25);outline-offset:8px;
+    box-shadow:0 0 22px rgba(36,229,208,.35);opacity:0;transition:.2s;
+  }
+  .ring.active::after{opacity:1}
+
+  /* Controls & labels */
+  .controls{margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  button{
+    border:none;border-radius:999px;padding:10px 16px;font-weight:700;
+    background:linear-gradient(135deg,var(--pink),#ff8ad3 60%,#ffb3e2);
+    color:#1a0d16;cursor:pointer;
+    box-shadow:0 10px 18px rgba(255,113,168,.3),inset 0 1px 0 rgba(255,255,255,.5);
+  }
+  .hint{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;  
+  opacity: .8;
+  }
+
+  .hint.tip{
+    margin-top: 10px;
+  }
+
+  button.secondary{background:linear-gradient(135deg,#c6e6ff,#9fd9ff);}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;}
+  .ok{background:#28e78a;box-shadow:0 0 10px rgba(40,231,138,.5)}
+  .bad{background:#ff6b6b;box-shadow:0 0 10px rgba(255,107,107,.5)}
+
+  /* ===== Modal ===== */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:flex;justify-content:center;align-items:center;z-index:999;visibility:hidden;opacity:0;transition:opacity .4s ease;}
+  .modal.show{visibility:visible;opacity:1;}
+  .modal-content {
+    background: #fff;
+    padding: 22px 26px;
+    border-radius: 14px;
+    text-align: center;
+    max-width: 92%;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .5);
+    animation: popIn 0.7s ease; 
+  }
+  @keyframes pop{0%{transform:scale(.86);opacity:0;}100%{transform:scale(1);opacity:1;}}
+  .modal h2{margin:0 0 8px;color:#ff4fa3}
+  .modal p{margin:0;color:#333}
+  #closeModal{margin-top:10px;padding:6px 14px;border:none;border-radius:8px;background:#ff71a8;color:#fff;font-weight:600;cursor:pointer;}
+
+  /* Tombol musik */
+  #playMusic{
+    display:none;position:fixed;top:10px;right:10px;z-index:1000;
+    border:none;border-radius:999px;padding:8px 12px;font-weight:700;
+    background:linear-gradient(135deg,#c6e6ff,#9fd9ff);
+    color:#102;box-shadow:0 6px 16px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.7);
+  }
+
+  /* ✨ Popup Make a Wish */
+  #wishPopup{
+    position:fixed;top:20px;left:50%;transform:translateX(-50%);
+    background:rgba(255,255,255,0.95);color:#333;padding:10px 18px;
+    border-radius:10px;font-weight:600;font-size:15px;
+    box-shadow:0 4px 18px rgba(0,0,0,0.25);
+    opacity:0;transition:opacity .4s ease;z-index:9999;
+  }
+  #wishPopup.show{opacity:1;}
+
+  @keyframes popIn {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+      filter: blur(3px);
+    }
+    60% {
+      transform: scale(1.05);
+      opacity: 1;
+      filter: blur(0);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .hearts {
+    position: absolute; /* ubah dari fixed ke absolute */
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 10; /* tetap di atas elemen lain di dalam kartu */
+  }
+
+  .heart {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: pink;
+    transform: rotate(45deg);
+    opacity: 0.9;
+    animation: fall 3s linear forwards;
+  }
+
+  .heart::before,
+  .heart::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: inherit;
+  }
+
+  .heart::before { top: -5px; left: 0; }
+  .heart::after { left: -5px; top: 0; }
+
+  @keyframes fall {
+    0% {
+      transform: translateY(-10px) rotate(45deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100vh) rotate(45deg);
+      opacity: 0;
+    }
+  }
+
+</style>
+</head>
+
+<body>
+<audio id="bgm" src="lagu.mp3" autoplay loop preload="auto"></audio>
+
+<div class="card" id="app">
+  <h1>HAPPY BIRTHDAY, DENISA & DENAYA! ✨</h1>
+  <br>
+  <br>
+
+  <div class="stage">
+    <div class="ring" id="ring"></div>
+    <div class="cake">
+      <div class="tier t1"></div>
+      <div class="frost"></div>
+      <div class="tier t2"></div>
+
+      <!-- Sprinkles -->
+      <div class="sprinkle" style="--rot:20deg; left:30px; top:98px"></div>
+      <div class="sprinkle mint" style="--rot:-12deg; left:70px; top:110px"></div>
+      <div class="sprinkle rose" style="--rot:8deg; left:120px; top:106px"></div>
+      <div class="sprinkle" style="--rot:-18deg; left:160px; top:120px"></div>
+      <div class="sprinkle mint" style="--rot:16deg; left:96px; top:62px"></div>
+      <div class="sprinkle rose" style="--rot:-10deg; left:46px; top:64px"></div>
+
+      <!-- Candle -->
+      <div class="candle">
+        <div class="wick"></div>
+        <div class="flame" id="flame"></div>
+        <div class="smoke" id="smoke"></div>
+      </div>
+
+      <div class="plate"></div>
+    </div>
+  </div>
+
+  <div class="wish" id="wish">Selamat Ulang Tahun! 🥳</div>
+
+  <div class="hint" id="status">
+    <span class="dot bad" id="micdot"></span> Mikrofon belum aktif. Klik <b>Mulai Mic</b> untuk memberi izin.
+  </div>
+
+  <div class="controls">
+    <button id="start">Tiup Lilin</button>
+    <button id="relight" class="secondary" disabled>Nyalakan Lagi</button>
+  </div>
+  <div class="hint tip">
+    Tip: bertiup ±1 detik agak kuat. Jika gagal, dekatkan <b>mic</b>.
+  </div>
+    <!-- ✨ Container untuk efek love -->
+  <div class="hearts" id="hearts"></div>
+</div>
+
+<!-- ✨ Popup Make a Wish -->
+<div id="wishPopup">Eitsss... sebelum tiup lilinnya make a wish dulu 😁</div>
+
+<!-- Modal Ucapan -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2>🎉 HBD yaa!! 🎉</h2>
+    <p>Wah tambah tua ni, Semoga yang disemogakan tersemogakan!!</p>
+    <p>Ditunggu teraktirannya hehe...</p>
+    <p>Semangat! untuk apapun itu. Sorry cuman bisa ngasih ginian</p>
+    <small>(Klik tombol di bawah untuk menutup)</small>
+    <br><br>
+    <button id="closeModal">Tutup</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const flame=document.getElementById('flame');
+  const ring=document.getElementById('ring');
+  const micDot=document.getElementById('micdot');
+  const statusEl=document.getElementById('status');
+  const startBtn=document.getElementById('start');
+  const relightBtn=document.getElementById('relight');
+  const modal=document.getElementById('modal');
+  const closeModal=document.getElementById('closeModal');
+  const wishPopup=document.getElementById('wishPopup');
+  const bgm=document.getElementById('bgm');
+  const playMusicBtn=document.getElementById('playMusic');
+
+  const THRESHOLD = 0.14;     // 0..1 (semakin kecil semakin sensitif)
+  const HOLD_MS   = 700;      // durasi hembusan
+  const DECAY     = 0.92;     // smoothing visual meter
+  const MAX_HEARTS = 38;
+
+  let audioCtx,analyser,dataArray,micStream,meter=0,aboveSince=0,lit=true,rafId=null;
+
+  function showWishMessage(){
+    wishPopup.classList.add('show');
+    setTimeout(()=>wishPopup.classList.remove('show'),5000);
+  }
+
+  function setMicState(ok,text){
+    micDot.className='dot '+(ok?'ok':'bad');
+    statusEl.innerHTML=`<span class="dot ${ok?'ok':'bad'}"></span>${text}`;
+  }
+
+  async function startMic(){
+    showWishMessage(); // ✨ Tambahan
+    bgm.play();
+    try{
+      if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+      if(audioCtx.state==='suspended') await audioCtx.resume();
+      micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+      const src=audioCtx.createMediaStreamSource(micStream);
+      analyser=audioCtx.createAnalyser();
+      analyser.fftSize=1024;
+      dataArray=new Uint8Array(analyser.fftSize);
+      src.connect(analyser);
+      setMicState(true,'Mikrofon aktif. Tiup lilinnya…');
+      startBtn.disabled=true;
+      cancelAnimationFrame(rafId);
+      update();
+    }catch(err){
+      setMicState(false,'Gagal mengakses mikrofon.');
+    }
+  }
+
+  function update(){
+    if(analyser){
+      analyser.getByteTimeDomainData(dataArray);
+      let sum=0; for(let i=0;i<dataArray.length;i++){const v=(dataArray[i]-128)/128;sum+=v*v;}
+      const rms=Math.sqrt(sum/dataArray.length);
+      meter=Math.max(rms,meter*DECAY);
+      ring.style.transform=`translate(-50%,-50%) scale(${1+Math.min(meter*3,.6)})`;
+      if(lit) ring.classList.toggle('active',meter>0.04);
+      const now=performance.now();
+      if(meter>THRESHOLD){if(!aboveSince) aboveSince=now;if(now-aboveSince>HOLD_MS){blowOut();aboveSince=0;}}
+      else aboveSince=0;
+    }
+    rafId=requestAnimationFrame(update);
+  }
+
+  function blowOut(){
+    if(!lit)return;
+    lit=false;
+    flame.classList.add('fade');
+    setTimeout(()=>flame.classList.add('hidden'),250);
+    ring.classList.remove('active');
+    relightBtn.disabled=false;
+    showModal();
+  }
+
+  function relight(){
+    if(lit)return;
+    flame.classList.remove('hidden','fade');
+    ring.classList.remove('active');
+    relightBtn.disabled=true;
+    lit=true;
+  }
+
+  function showModal(){
+    modal.classList.add('show');
+    dropHearts();
+  }
+  closeModal.addEventListener('click',()=>modal.classList.remove('show'));
+
+    /* ✨ Tambahan fungsi efek love */
+  function dropHearts() {
+    const hearts = document.getElementById('hearts');
+    for (let i = 0; i < 30; i++) {
+      const h = document.createElement('div');
+      h.className = 'heart';
+      const size = Math.random() * 10 + 10;
+      h.style.width = h.style.height = size + 'px';
+      h.style.left = Math.random() * 100 + '%';
+      h.style.background = ['#ff96c5', '#ffd1dc', '#fff0a5', '#a0ffe6', '#b5b9ff'][i % 5];
+      h.style.animationDuration = (Math.random() * 2 + 3) + 's';
+      hearts.appendChild(h);
+      setTimeout(() => h.remove(), 4000);
+    }
+  }
+
+  relightBtn.addEventListener('click',relight);
+  startBtn.addEventListener('click',startMic);
+
+  // 🎵 Autoplay fallback
+  bgm.volume = 0.8; // bisa juga untuk kontrol volume biar lebih lembut
+  bgm.play().catch(()=>{playMusicBtn.style.display='block';});
+  playMusicBtn.addEventListener('click',()=>{bgm.play();playMusicBtn.style.display='none';});
+})();
+</script>
+</body>
+</html>
